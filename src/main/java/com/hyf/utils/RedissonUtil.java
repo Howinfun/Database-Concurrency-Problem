@@ -17,7 +17,7 @@ public class RedissonUtil {
     private RedissonUtil(){
         // 构造redisson实现分布式锁必要的Config
         Config config = new Config();
-        config.useSingleServer().setAddress("redis://47.107.129.42:6379").setPassword("HowinfunRedis").setDatabase(1);
+        config.useSingleServer().setAddress("redis://127.0.0.1:6379").setPassword("123456").setDatabase(1);
         // 构造RedissonClient
         redissonClient = Redisson.create(config);
     }
