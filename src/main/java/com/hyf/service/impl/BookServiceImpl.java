@@ -5,12 +5,10 @@ import com.hyf.entity.Book;
 import com.hyf.mapper.BookMapper;
 import com.hyf.query.BookQuery;
 import com.hyf.service.BookService;
-import com.hyf.utils.RedissonUtil;
-import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 /**
  * @author Howinfun
@@ -27,7 +25,7 @@ public class BookServiceImpl implements BookService {
     public Boolean addOrUpdateBook(BookQuery query) {
         boolean flag = true;
         // 使用双重检查锁定来处理新增的并发问题
-        Book b = Book.builder().bookName(query.getBookName()).build();
+        Book b = Book.builder().book_name(query.getBookName()).build();
         Book oldBook = this.bookMapper.selectOne(b);
         if (oldBook == null){
             // 加锁
@@ -40,7 +38,7 @@ public class BookServiceImpl implements BookService {
                     updateBook(query);
                 }
             }
-            RLock lock = RedissonUtil.INSTANCE.getLock("addOrUpdateBook");
+            /*RLock lock = RedissonUtil.INSTANCE.getLock("addOrUpdateBook");
             try {
                 // 尝试获取锁，最多等待10000毫秒，获取锁后1000毫秒自动释放锁
                 if (lock.tryLock(10000, 10000, TimeUnit.MILLISECONDS)){
@@ -58,11 +56,17 @@ public class BookServiceImpl implements BookService {
             }finally {
                 // 最后记得释放锁
                 lock.unlock();
-            }
+            }*/
         }else{
+            query.setReadFrequency(oldBook.getReadFrequency()+1);
             updateBook(query);
         }
         return flag;
+    }
+
+    @Override
+    public List<Book> getAllBook() {
+        return this.bookMapper.selectAll();
     }
 
     /**
@@ -71,13 +75,14 @@ public class BookServiceImpl implements BookService {
      */
     private void updateBook(BookQuery query){
         // 参考cas
-        for (;;){
+        /*for (;;){
             Integer version = this.bookMapper.getVersionByBookName(query.getBookName());
             query.setVersion(version);
             Integer updateCount = this.bookMapper.updateBookByVersion(query);
             if (updateCount != null && updateCount.equals(1)){
                 break;
             }
-        }
+        }*/
+        this.bookMapper.updateBook(query);
     }
 }

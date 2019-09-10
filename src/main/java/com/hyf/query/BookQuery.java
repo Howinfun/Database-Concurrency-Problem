@@ -12,4 +12,6 @@ public class BookQuery {
 
     private String bookName;
     private Integer version;
+    /** 阅读量 */
+    private Integer readFrequency;
 }

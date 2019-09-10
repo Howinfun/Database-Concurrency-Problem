@@ -31,4 +31,12 @@ public interface BookMapper extends BaseMapper<Book> {
      */
     @Update("update book set version = version+1,read_frequency = read_frequency+1 where book_name = #{bookName} and version = #{version}")
     Integer updateBookByVersion(BookQuery book);
+
+    /**
+     * 根据书名和版本号更新book
+     * @param book
+     * @return
+     */
+    @Update("update book set read_frequency = #{readFrequency} where book_name = #{bookName}")
+    Integer updateBook(BookQuery book);
 }

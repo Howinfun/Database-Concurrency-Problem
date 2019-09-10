@@ -1,6 +1,9 @@
 package com.hyf.service;
 
+import com.hyf.entity.Book;
 import com.hyf.query.BookQuery;
+
+import java.util.List;
 
 /**
  * @author Howinfun
@@ -15,4 +18,6 @@ public interface BookService {
      * @return
      */
     Boolean addOrUpdateBook(BookQuery query);
+
+    List<Book> getAllBook();
 }
